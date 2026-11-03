@@ -5,11 +5,11 @@ import nltk
 
 
 #  load LLMs, we employ mistral-7b as LLM, from https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1
-os.environ['CUDA_VISIBLE_DEVICES'] = '2, 3'
-model = AutoModelForCausalLM.from_pretrained("/data01/whr/resources/Mistral-7B-Instruct-v0.3",
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3",
                                              # local_files_only=True,
                                              device_map='auto')
-tokenizer = AutoTokenizer.from_pretrained("/data01/whr/resources/Mistral-7B-Instruct-v0.3", local_files_only=True)
+tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3")
 
 
 @torch.no_grad()
