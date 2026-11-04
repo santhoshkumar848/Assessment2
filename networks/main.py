@@ -11,9 +11,9 @@ import nltk
 
 #  load LLMs, we employ mistral-7b as LLM, from https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3",
+model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct",
                                              device_map='auto')
-tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3")
+tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct")
 
 
 def construct_length(text):
@@ -35,12 +35,12 @@ def get_reply(content, temperature=0.3):
     input_length = len(inputs['input_ids'][0])
     if temperature == 0:
         generated_ids = model.generate(**inputs,
-                                       max_new_tokens=200,
+                                       max_new_tokens=80,
                                        do_sample=False,
                                        pad_token_id=tokenizer.eos_token_id)
     else:
         generated_ids = model.generate(**inputs,
-                                       max_new_tokens=200,
+                                       max_new_tokens=80,
                                        temperature=temperature,
                                        do_sample=True,
                                        pad_token_id=tokenizer.eos_token_id)
@@ -156,7 +156,7 @@ def generate(news):
     users = []
     reasons = []
 
-    size_limit = 11  # parameter to control the network size
+    size_limit = 2  # parameter to control the network size
     rt_ratio = 0.2  # parameter to control the probability of commenting on the news article, namely alpha in our paper
     height_ratio = 0.6  # parameter to balance the tree height and width, namely bata in our paper
     eps = 1e-5
@@ -217,9 +217,8 @@ def generate(news):
 def main():
     random.seed(20250101)
     dataset_names = {
-        'TASK1': ['LLM-mis', 'Pheme'],
-        'TASK2': ['MFC', 'SemEval-23F'],
-        'TASK3': ['Generated', 'SemEval-20', 'SemEval-23P']
+        'TASK1': ['LLM-mis']
+
     }
     for task in dataset_names:
         for dataset in dataset_names[task]:
@@ -231,7 +230,7 @@ def main():
                 os.mkdir(save_dir)
             data = json.load(open(f'../data/datasets/{task}/{dataset}.json', encoding='utf-8'))
             #  load datasets
-            for index, item in enumerate(tqdm(data, desc='{}, {}'.format(task, dataset_name), leave=False)):
+            for index, item in enumerate(tqdm(data[:1], desc='{}, {}'.format(task, dataset_name), leave=False)):
                 save_path = f'{save_dir}/{index}.json'
                 if os.path.exists(save_path):
                     continue
@@ -241,7 +240,7 @@ def main():
                 #  you can use the generate function.
                 out = generate(in_text)  # the input is news article
                 json.dump(out, open(save_path, 'w', encoding='utf-8'))  # save the network
-
+                print(json.dumps(out)[:1500])
 
 if __name__ == '__main__':
     main()
