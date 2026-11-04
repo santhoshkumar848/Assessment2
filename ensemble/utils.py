@@ -3,13 +3,13 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
-#  load LLMs, we employ mistral-7b as LLM, from https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1
+#  load LLMs, we employ mistral-7b as LLM, from https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3
 #  you can change it to other LLMs such as ChatGPT or Llama
-os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 2, 3'
-model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-Instruct-v0.1",
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3",
                                              # local_files_only=True,
                                              device_map='auto')
-tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.1", local_files_only=True)
+tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.3")
 
 
 @torch.no_grad()
